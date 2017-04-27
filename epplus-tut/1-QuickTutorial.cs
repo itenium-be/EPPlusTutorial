@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using EPPlusTutorial.Util;
 
 namespace EPPlusTutorial
 {
@@ -58,7 +59,7 @@ namespace EPPlusTutorial
         {
             using (var package = new ExcelPackage())
             {
-                ExcelWorksheet sheet1 = package.Workbook.Worksheets.Add("MySheet");
+                var sheet1 = package.Workbook.Worksheets.Add("MySheet");
 
                 // One cell
                 ExcelRange cellA2 = sheet1.Cells["A2"];
@@ -83,6 +84,11 @@ namespace EPPlusTutorial
                 var usedDimensions = sheet1.Dimension;
                 Assert.That(usedDimensions.Address, Is.EqualTo(ranger.Address));
 
+                // Offset: down 5 rows, right 10 columns
+                var movedRanger = ranger.Offset(5, 10);
+                Assert.That(movedRanger.Address, Is.EqualTo("K7:M10"));
+                movedRanger.Value = "Moved";
+
                 package.SaveAs(new FileInfo(BinDir.GetPath()));
             }
         }
@@ -93,7 +99,7 @@ namespace EPPlusTutorial
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             using (var package = new ExcelPackage())
             {
-                ExcelWorksheet sheet1 = package.Workbook.Worksheets.Add("MySheet");
+                var sheet1 = package.Workbook.Worksheets.Add("MySheet");
 
                 // Numbers
                 sheet1.SetValue("A1", "Numbers");
@@ -116,11 +122,17 @@ namespace EPPlusTutorial
                 sheet1.Cells["C3"].Value = DateTime.Now;
                 sheet1.Cells["D3"].Style.Numberformat.Format = "dd/MM/yyyy HH:mm";
                 sheet1.Cells["D3"].Value = DateTime.Now;
+                 
 
-                // A hyperlink
+                // An external hyperlink
                 sheet1.Cells["C25"].Formula = "HYPERLINK(\"mailto:support@pongit.be\",\"Contact support\")";
                 sheet1.Cells["C25"].Style.Font.Color.SetColor(Color.Blue);
                 sheet1.Cells["C25"].Style.Font.UnderLine = true;
+                
+                // An internal hyperlink
+                package.Workbook.Worksheets.Add("Data");
+                sheet1.Cells["C26"].Hyperlink = new ExcelHyperLink("Data!A1", "Goto data sheet");
+
 
                 sheet1.Cells.AutoFitColumns();
                 package.SaveAs(new FileInfo(BinDir.GetPath()));
@@ -132,7 +144,7 @@ namespace EPPlusTutorial
         {
             using (var package = new ExcelPackage())
             {
-                ExcelWorksheet sheet1 = package.Workbook.Worksheets.Add("Styling");
+                var sheet1 = package.Workbook.Worksheets.Add("Styling");
 
                 // Cells with style
                 ExcelFont font = sheet1.Cells["A1"].Style.Font;

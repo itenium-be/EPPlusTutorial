@@ -52,7 +52,7 @@
     <Compile Include="1-QuickTutorial.cs" />
     <Compile Include="2-Formulas.cs" />
     <Compile Include="3-Import.cs" />
-    <Compile Include="BinDir.cs" />
+    <Compile Include="Util\BinDir.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
