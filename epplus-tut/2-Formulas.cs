@@ -1,106 +1,188 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using OfficeOpenXml;
 using EPPlusTutorial.Util;
+using OfficeOpenXml.Style;
+using OfficeOpenXml.Table;
+using System.Collections.Generic;
+using OfficeOpenXml.DataValidation;
+using OfficeOpenXml.DataValidation.Contracts;
 
 namespace EPPlusTutorial
 {
     [TestFixture]
     public class Formulas
     {
-        // also selecting like: sheet.Cells["d:d"] here
-        // ...
-
-        //Select all cells in column d between 9990 and 10000
-        //        var query1 = (from cell in sheet.Cells["d:d"] where cell.Value is double && (double)cell.Value >= 9990 && (double)cell.Value <= 10000 select cell);
-        //        In combination with the Range.Offset method you can also check values of other columns...
-
-
-        //        //Here we use more than one column in the where clause. 
-        //        //We start by searching column D, then use the Offset method to check the value of column C.
-        //        var query3 = (from cell in sheet.Cells["d:d"]
-        //                      where cell.Value is double &&
-        //                       (double)cell.Value >= 9500 && (double)cell.Value <= 10000 &&
-        //                       cell.Offset(0, -1).Value is double &&      //Column C is a double since its not a default date format.
-        //                       DateTime.FromOADate((double)cell.Offset(0, -1).Value).Year == DateTime.Today.Year + 1
-        //                      select cell);
-
-        //        Console.WriteLine();
-        //Console.WriteLine("Print all cells with a value between 9500 and 10000 in column D and the year of Column C is {0} ...", DateTime.Today.Year + 1);
-        //Console.WriteLine();    
-
-        // count = 0;
-        ////The cells returned here will all be in column D, since that is the address in the indexer. 
-        ////Use the Offset method to print any other cells from the same row.
-        //foreach (var cell in query3)    
-        //{
-        //   Console.WriteLine("Cell {0} has value {1:N0} Date is {2:d}", cell.Address, cell.Value, DateTime.FromOADate((double)cell.Offset(0, -1).Value));
-        //   count++;
-        //}
-
         [Test]
-        public void Subtotals()
+        public void BasicFormulas()
         {
             using (var package = new ExcelPackage())
             {
                 var sheet = package.Workbook.Worksheets.Add("Formula");
-                var sheetData = package.Workbook.Worksheets.Add("Data");
 
-                AddSomeData(sheetData);
+                // SetHeaders is an extension method
+                sheet.Cells["A1"].SetHeaders("Id", "Product", "Quantity", "Price", "Base total", "Discount", "Total", "Special discount", "Payup");
+                sheet.Cells["H5"].AddComment("Special discount for our most valued customers", "evil corp");
 
-                // 
-                sheetData.Cells["A1:E4"].AutoFilter = true;
+                // Turn filtering on for the headers
+                sheet.Cells[1, 1, 1, sheet.Dimension.End.Column].AutoFilter = true;
 
-                //
+                var data = AddThreeRowsDataAndFormat(sheet);
 
-                
+                // Starting = is optional
+                sheet.Cells["A5"].Formula = "=COUNT(A2:A4)";
+                // Hide the formula (when the sheet.IsProtected)
+                sheet.Cells["A5"].Style.Hidden = true;
 
-                //Assert.That(cellA2.FullAddress, Is.EqualTo("A2"));
+                // Total column
+                sheet.Cells["E2:E4"].Formula = "C2*D2"; // quantity * price
+                Assert.That(sheet.Cells["E2"].FormulaR1C1, Is.EqualTo("RC[-2]*RC[-1]"));
+                Assert.That(sheet.Cells["E4"].FormulaR1C1, Is.EqualTo("RC[-2]*RC[-1]"));
 
-                //sheet.Dimension.Table
-                //ConditionalFormatting
+                // Total - discount column
+                // Calculate formulas before they are available in the sheet
+                // (Opening an Excel with Office will do this automatically)
+                sheet.Cells["G2:G4"].Formula = "IF(ISBLANK(F2),E2,E2*(1-F2))";
+                Assert.That(sheet.Cells["G2"].Text, Is.Empty);
+                sheet.Calculate();
+                Assert.That(sheet.Cells["G2"].Text, Is.Not.Empty);
 
-                //worksheet.Cells["A1"].Formula="CONCATENATE(\"string1_\",\"test\")";
-                //.Formula = "=B3*10"
+                // Total row
+                // R1C1 reference style
+                sheet.Cells["E5"].FormulaR1C1 = "SUBTOTAL(9,R[-3]C:R[-1]C)"; // total
+                Assert.That(sheet.Cells["E5"].Formula, Is.EqualTo("SUBTOTAL(9,E2:E4)"));
+                sheet.Cells["G5"].FormulaR1C1 = "SUBTOTAL(9,R[-3]C:R[-1]C)"; // total - discount
+                Assert.That(sheet.Cells["G5"].Formula, Is.EqualTo("SUBTOTAL(9,G2:G4)"));
 
-                // Absolute reference: $B$5
+                sheet.Calculate();
+                sheet.Cells["I2:I5"].Formula = "G2*(1-$H$5)"; // Pin H5
 
-                // http://epplus.codeplex.com/wikipage?title=ContentSheetExample
+                // SUBTOTAL(9 = SUM) // 109 = Sum excluding manually hidden rows
+                // AVERAGE (1), COUNT (2), COUNTA (3), MAX (4), MIN (5)
+                // PRODUCT (6), STDEV (7), STDEVP (8), SUM (9), VAR (10)
 
+                sheet.Cells.AutoFitColumns();
+                package.SaveAs(new FileInfo(BinDir.GetPath()));
+            }
+        }
 
+        private ICollection<Sell> AddThreeRowsDataAndFormat(ExcelWorksheet sheet)
+        {
+            var data = new SalesGenerator().Generate(3).ToArray();
+            // See 3-Import for more about LoadFromXXX
+            sheet.Cells["A2"].LoadFromCollection(data, false);
+
+            // Special discount
+            sheet.Cells["H5"].Value = 0.2;
+            sheet.Cells["H5"].Style.Numberformat.Format = "0%";
+
+            // Formatting is covered in 1-QuickTutorial
+            sheet.Cells["C2:C5"].Style.Numberformat.Format = "#,##0"; // number
+            sheet.Cells["D2:E5,G2:G5,I2:I5"].Style.Numberformat.Format = "[$$-409]#,##0.00"; // money
+            sheet.Cells["F2:F5"].Style.Numberformat.Format = "0%"; // percentage
+
+            // Border above the totals row
+            var lastCell = sheet.Dimension.End;
+            sheet.Cells[lastCell.Row, 1, lastCell.Row, lastCell.Column].Style.Border.Top.Style = ExcelBorderStyle.Double;
+
+            return data;
+        }
+
+        [Test]
+        public void DataValidation_DropDownComboCell()
+        {
+using (var package = new ExcelPackage())
+{
+    var sheet = package.Workbook.Worksheets.Add("Validation");
+
+    var list1 = sheet.Cells["C7"].DataValidation.AddListDataValidation();
+    list1.Formula.Values.Add("Apples");
+    list1.Formula.Values.Add("Oranges");
+    list1.Formula.Values.Add("Lemons");
+
+    list1.ShowErrorMessage = true;
+    list1.Error = "We only have those available :(";
+
+    list1.ShowInputMessage = true;
+    list1.PromptTitle = "Choose your juice";
+    list1.Prompt = "Apples, oranges or lemons?";
+
+    list1.AllowBlank = true;
+
+    sheet.Cells["C7"].Value = "Pick";
+    sheet.Cells["C7"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+    package.SaveAs(new FileInfo(BinDir.GetPath()));
+}
+        }
+
+        [Test]
+        public void DataValidation_FromOtherSheet()
+        {
+            using (var package = new ExcelPackage())
+            {
+                var sheet = package.Workbook.Worksheets.Add("Validation");
+
+                var otherSheet = package.Workbook.Worksheets.Add("OtherSheet");
+                otherSheet.Cells["A1"].Value = "Kwan";
+                otherSheet.Cells["A2"].Value = "Nancy";
+                otherSheet.Cells["A3"].Value = "Tonya";
+
+                var list1 = sheet.Cells["C7"].DataValidation.AddListDataValidation();
+                list1.Formula.ExcelFormula = "OtherSheet!A1:A4";
 
                 package.SaveAs(new FileInfo(BinDir.GetPath()));
             }
         }
 
-        private void AddSomeData(ExcelWorksheet sheet)
+        [Test]
+        public void DataValidation_IntAndDateTime()
         {
-            //Add the headers
-            sheet.Cells[1, 1].Value = "ID";
-            sheet.Cells[1, 2].Value = "Product";
-            sheet.Cells[1, 3].Value = "Quantity";
-            sheet.Cells[1, 4].Value = "Price";
-            sheet.Cells[1, 5].Value = "Value";
+            using (var package = new ExcelPackage())
+            {
+                var sheet = package.Workbook.Worksheets.Add("intsAndSuch");
 
-            //Add some items...
-            sheet.Cells["A2"].Value = 12001;
-            sheet.Cells["B2"].Value = "Nails";
-            sheet.Cells["C2"].Value = 37;
-            sheet.Cells["D2"].Value = 3.99;
+                // Integer validation
+                IExcelDataValidationInt intValidation = sheet.DataValidations.AddIntegerValidation("A1");
+                intValidation.Prompt = "Value between 1 and 5";
+                intValidation.Operator = ExcelDataValidationOperator.between;
+                intValidation.Formula.Value = 1;
+                intValidation.Formula2.Value = 5;
 
-            sheet.Cells["A3"].Value = 12002;
-            sheet.Cells["B3"].Value = "Hammer";
-            sheet.Cells["C3"].Value = 5;
-            sheet.Cells["D3"].Value = 12.10;
+                // DateTime validation
+                IExcelDataValidationDateTime dateTimeValidation = sheet.DataValidations.AddDateTimeValidation("A2");
+                dateTimeValidation.Prompt = "A date greater than today";
+                dateTimeValidation.Operator = ExcelDataValidationOperator.greaterThan;
+                dateTimeValidation.Formula.Value = DateTime.Now.Date;
 
-            sheet.Cells["A4"].Value = 12003;
-            sheet.Cells["B4"].Value = "Saw";
-            sheet.Cells["C4"].Value = 12;
-            sheet.Cells["D4"].Value = 15.37;
+                // Time validation
+                IExcelDataValidationTime timeValidation = sheet.DataValidations.AddTimeValidation("A3");
+                timeValidation.Operator = ExcelDataValidationOperator.greaterThan;
+                var time = timeValidation.Formula.Value;
+                time.Hour = 13;
+                time.Minute = 30;
+                time.Second = 10;
+
+                // Existing validations
+                var validations = package.Workbook.Worksheets.SelectMany(sheet1 => sheet1.DataValidations);
+
+                package.SaveAs(new FileInfo(BinDir.GetPath()));
+            }
         }
 
-        // TODO: http://epplus.codeplex.com/wikipage?title=Supported%20Functions&referringTitle=Documentation
-        // Put all functions with link to docs
+        [Test]
+        public void TroubleshootingFormulas()
+        {
+            using (var package = new ExcelPackage())
+            {
+                var logfile = new FileInfo(BinDir.GetPath("TroubleshootingFormulas.txt"));
+                package.Workbook.FormulaParserManager.AttachLogger(logfile);
+                package.Workbook.Calculate();
+                package.Workbook.FormulaParserManager.DetachLogger();
+            }
+        }
     }
 }

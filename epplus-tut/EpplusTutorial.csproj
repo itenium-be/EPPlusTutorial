@@ -52,8 +52,12 @@
     <Compile Include="1-QuickTutorial.cs" />
     <Compile Include="2-Formulas.cs" />
     <Compile Include="3-Import.cs" />
+    <Compile Include="4-Miscellaneous.cs" />
     <Compile Include="Util\BinDir.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\ExcelHelpers.cs" />
+    <Compile Include="Util\SalesGenerator.cs" />
+    <Compile Include="Util\Sell.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
