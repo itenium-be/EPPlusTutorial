@@ -15,7 +15,7 @@ using OfficeOpenXml.DataValidation.Contracts;
 namespace EPPlusTutorial
 {
     [TestFixture]
-    public class Formulas
+    public class FormulasAndDataValidation
     {
         [Test]
         public void BasicFormulas()
@@ -93,30 +93,48 @@ namespace EPPlusTutorial
         }
 
         [Test]
+        public void ImplementedFormulaFunctions()
+        {
+            using (var package = new ExcelPackage())
+            {
+                var sheet = package.Workbook.Worksheets.Add("Funcs");
+
+                var funcs = package.Workbook.FormulaParserManager.GetImplementedFunctions()
+                    .OrderBy(x => x.Value.GetType().FullName)
+                    .ThenBy(x => x.Key)
+                    .Select(x => new { FunctionName = x.Key, TypeName = x.Value.GetType().FullName, x.Value.IsErrorHandlingFunction, x.Value.IsLookupFuction });
+
+                sheet.Cells.LoadFromCollection(funcs, true);
+
+                sheet.Cells.AutoFitColumns();
+                package.SaveAs(new FileInfo(BinDir.GetPath()));
+            }
+        }
+
+        [Test]
         public void DataValidation_DropDownComboCell()
         {
-using (var package = new ExcelPackage())
-{
-    var sheet = package.Workbook.Worksheets.Add("Validation");
+            using (var package = new ExcelPackage())
+            {
+                var sheet = package.Workbook.Worksheets.Add("Validation");
 
-    var list1 = sheet.Cells["C7"].DataValidation.AddListDataValidation();
-    list1.Formula.Values.Add("Apples");
-    list1.Formula.Values.Add("Oranges");
-    list1.Formula.Values.Add("Lemons");
+                var list1 = sheet.Cells["C7"].DataValidation.AddListDataValidation();
+                list1.Formula.Values.Add("Apples");
+                list1.Formula.Values.Add("Oranges");
+                list1.Formula.Values.Add("Lemons");
 
-    list1.ShowErrorMessage = true;
-    list1.Error = "We only have those available :(";
+                list1.ShowErrorMessage = true;
+                list1.Error = "We only have those available :(";
 
-    list1.ShowInputMessage = true;
-    list1.PromptTitle = "Choose your juice";
-    list1.Prompt = "Apples, oranges or lemons?";
+                list1.ShowInputMessage = true;
+                list1.PromptTitle = "Choose your juice";
+                list1.Prompt = "Apples, oranges or lemons?";
 
-    list1.AllowBlank = true;
+                list1.AllowBlank = true;
 
-    sheet.Cells["C7"].Value = "Pick";
-    sheet.Cells["C7"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-    package.SaveAs(new FileInfo(BinDir.GetPath()));
-}
+                sheet.Cells["C7"].Value = "Pick";
+                package.SaveAs(new FileInfo(BinDir.GetPath()));
+            }
         }
 
         [Test]

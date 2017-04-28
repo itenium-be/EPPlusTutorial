@@ -21,7 +21,6 @@ Install-Package EPPlus
 ### Miscellaneous
 
 - Printing
-- Address convertion
 - Workbook properties
 - Converting Excel Addresses
 - Adding comments & rich text
@@ -52,13 +51,17 @@ Wish List
 Will we cover these also, sometime?
 
 - ConditionalFormatting: See Sample14.cs
-- Inserting VBA: See Sample15.cs
 - Filtering
+- Grouping and ungrouping
+- Tables
+- Inserting VBA: See Sample15.cs
 - Numberformat.Format = [$$-409] --> Get info on those numbers
 - 1-QuickTutorial ExcelPrinting: insert a company picture in the print footer: sheet.HeaderFooter.EvenHeader.InsertPicture()
 - Password protection: Add Encryption
 - WebApi integration and calling code for Superagent, Angular Http and Fetch? :)
 
+
+**WebApi**:  
 ```c#
 public class ExcelResult : ActionResult
 {
@@ -87,5 +90,5 @@ if (icon != null)
 }
 ```
 
-[article-link]: https://be-pongit.github.io/epplus/
+[article-link]: https://be-pongit.github.io/nuget/epplus/
 [chart-codeplex]: http://epplus.codeplex.com/wikipage?title=StatisticsSheetExample

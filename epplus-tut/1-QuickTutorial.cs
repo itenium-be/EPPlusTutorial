@@ -23,9 +23,33 @@ namespace EPPlusTutorial
             using (var package = new ExcelPackage())
             {
                 ExcelWorksheet sheet = package.Workbook.Worksheets.Add("MySheet");
-                ExcelRange firstCell = sheet.Cells[1, 1]; // or use "A1"
-                firstCell.Value = "will it work...";
+
+                // Setting & getting values
+                ExcelRange firstCell = sheet.Cells[1, 1];
+                firstCell.Value = "will it work?";
+                sheet.Cells["A2"].Formula = "CONCATENATE(A1,\" ... Ofcourse it will!\")";
+                Assert.That(firstCell.Text, Is.EqualTo("will it work?"));
+
+                // Numbers
+                var moneyCell = sheet.Cells["A3"];
+                moneyCell.Style.Numberformat.Format = "$#,##0.00";
+                moneyCell.Value = 15.25M;
+
+                // Easily write any Enumerable to a sheet
+                // In this case: All Excel functions implemented by EPPlus
+                var funcs = package.Workbook.FormulaParserManager.GetImplementedFunctions()
+                    .Select(x => new { FunctionName = x.Key, TypeName = x.Value.GetType().FullName });
+                sheet.Cells["A4"].LoadFromCollection(funcs, true);
+
+                // Styling cells
+                var someCells = sheet.Cells["A1,A4:B4"];
+                someCells.Style.Font.Bold = true;
+                someCells.Style.Font.Color.SetColor(Color.Ivory);
+                someCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                someCells.Style.Fill.BackgroundColor.SetColor(Color.Navy);
+
                 sheet.Cells.AutoFitColumns();
+                //package.SaveAs(new FileInfo(@"basicUsage.xslx"));
                 package.SaveAs(new FileInfo(BinDir.GetPath()));
             }
         }
@@ -43,7 +67,7 @@ namespace EPPlusTutorial
                 sheet.Cells["D2"].Value = "by the package.Load() below!!!";
 
                 // Loads the worksheets from BasicUsage
-                // (MySheet with A1 = will it work...)
+                // (MySheet with A1 = will it work?)
                 package.Load(basicUsageExcel);
 
                 // See 3-Import for more loading techniques
@@ -140,6 +164,11 @@ namespace EPPlusTutorial
                 sheet.Cells["D3"].Style.Numberformat.Format = "dd/MM/yyyy HH:mm";
                 sheet.Cells["D3"].Value = DateTime.Now;
 
+                // Write a sortable date
+                //TimeSpan diff = new DateTime(1900, 1, 1) - DateTime.Now;
+                //sheet.Cells["D3"].Value = diff;
+                // TODO: Still need to check which would be the best/most convenient way to handle dates
+
 
                 // An external hyperlink
                 sheet.Cells["C24"].Hyperlink = new Uri("http://pongit.be", UriKind.Absolute);
@@ -227,7 +256,7 @@ namespace EPPlusTutorial
 
                 sheet.View.ShowGridLines = false;
                 sheet.View.ShowHeaders = false;
-                
+
                 //sheet.DeleteColumn();
                 //sheet.InsertColumn();
 
