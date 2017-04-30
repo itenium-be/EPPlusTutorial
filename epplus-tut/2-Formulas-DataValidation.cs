@@ -25,7 +25,7 @@ namespace EPPlusTutorial
                 var sheet = package.Workbook.Worksheets.Add("Formula");
 
                 // SetHeaders is an extension method
-                sheet.Cells["A1"].SetHeaders("Id", "Product", "Quantity", "Price", "Base total", "Discount", "Total", "Special discount", "Payup");
+                sheet.Cells["A1"].SetHeaders("Product", "Quantity", "Price", "Base total", "Discount", "Total", "Special discount", "Payup");
                 sheet.Cells["H5"].AddComment("Special discount for our most valued customers", "evil corp");
 
                 // Turn filtering on for the headers
@@ -34,32 +34,32 @@ namespace EPPlusTutorial
                 var data = AddThreeRowsDataAndFormat(sheet);
 
                 // Starting = is optional
-                sheet.Cells["A5"].Formula = "=COUNT(A2:A4)";
+                sheet.Cells["A5"].Formula = "=COUNTA(A2:A4)";
                 // Hide the formula (when the sheet.IsProtected)
                 sheet.Cells["A5"].Style.Hidden = true;
 
                 // Total column
-                sheet.Cells["E2:E4"].Formula = "C2*D2"; // quantity * price
-                Assert.That(sheet.Cells["E2"].FormulaR1C1, Is.EqualTo("RC[-2]*RC[-1]"));
-                Assert.That(sheet.Cells["E4"].FormulaR1C1, Is.EqualTo("RC[-2]*RC[-1]"));
+                sheet.Cells["D2:D4"].Formula = "B2*C2"; // quantity * price
+                Assert.That(sheet.Cells["D2"].FormulaR1C1, Is.EqualTo("RC[-2]*RC[-1]"));
+                Assert.That(sheet.Cells["D4"].FormulaR1C1, Is.EqualTo("RC[-2]*RC[-1]"));
 
                 // Total - discount column
                 // Calculate formulas before they are available in the sheet
                 // (Opening an Excel with Office will do this automatically)
-                sheet.Cells["G2:G4"].Formula = "IF(ISBLANK(F2),E2,E2*(1-F2))";
-                Assert.That(sheet.Cells["G2"].Text, Is.Empty);
+                sheet.Cells["F2:F4"].Formula = "IF(ISBLANK(E2),D2,D2*(1-E2))";
+                Assert.That(sheet.Cells["F2"].Text, Is.Empty);
                 sheet.Calculate();
-                Assert.That(sheet.Cells["G2"].Text, Is.Not.Empty);
+                Assert.That(sheet.Cells["F2"].Text, Is.Not.Empty);
 
                 // Total row
                 // R1C1 reference style
-                sheet.Cells["E5"].FormulaR1C1 = "SUBTOTAL(9,R[-3]C:R[-1]C)"; // total
-                Assert.That(sheet.Cells["E5"].Formula, Is.EqualTo("SUBTOTAL(9,E2:E4)"));
-                sheet.Cells["G5"].FormulaR1C1 = "SUBTOTAL(9,R[-3]C:R[-1]C)"; // total - discount
-                Assert.That(sheet.Cells["G5"].Formula, Is.EqualTo("SUBTOTAL(9,G2:G4)"));
+                sheet.Cells["D5"].FormulaR1C1 = "SUBTOTAL(9,R[-3]C:R[-1]C)"; // total
+                Assert.That(sheet.Cells["D5"].Formula, Is.EqualTo("SUBTOTAL(9,D2:D4)"));
+                sheet.Cells["F5"].FormulaR1C1 = "SUBTOTAL(9,R[-3]C:R[-1]C)"; // total - discount
+                Assert.That(sheet.Cells["F5"].Formula, Is.EqualTo("SUBTOTAL(9,F2:F4)"));
 
                 sheet.Calculate();
-                sheet.Cells["I2:I5"].Formula = "G2*(1-$H$5)"; // Pin H5
+                sheet.Cells["H2:H5"].Formula = "F2*(1-$G$5)"; // Pin G5
 
                 // SUBTOTAL(9 = SUM) // 109 = Sum excluding manually hidden rows
                 // AVERAGE (1), COUNT (2), COUNTA (3), MAX (4), MIN (5)
@@ -77,13 +77,13 @@ namespace EPPlusTutorial
             sheet.Cells["A2"].LoadFromCollection(data, false);
 
             // Special discount
-            sheet.Cells["H5"].Value = 0.2;
-            sheet.Cells["H5"].Style.Numberformat.Format = "0%";
+            sheet.Cells["G5"].Value = 0.2;
+            sheet.Cells["G5"].Style.Numberformat.Format = "0%";
 
             // Formatting is covered in 1-QuickTutorial
-            sheet.Cells["C2:C5"].Style.Numberformat.Format = "#,##0"; // number
-            sheet.Cells["D2:E5,G2:G5,I2:I5"].Style.Numberformat.Format = "[$$-409]#,##0.00"; // money
-            sheet.Cells["F2:F5"].Style.Numberformat.Format = "0%"; // percentage
+            sheet.Cells["B2:B5"].Style.Numberformat.Format = "#,##0"; // number
+            sheet.Cells["C2:D5,F2:F5,H2:H5"].Style.Numberformat.Format = "[$$-409]#,##0.00"; // money
+            sheet.Cells["E2:E5"].Style.Numberformat.Format = "0%"; // percentage
 
             // Border above the totals row
             var lastCell = sheet.Dimension.End;
