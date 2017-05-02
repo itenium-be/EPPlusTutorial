@@ -77,13 +77,14 @@ namespace EPPlusTutorial
         {
             using (var package = new ExcelPackage())
             {
-                var sheet = package.Workbook.Worksheets.Add("");
+                var sheet = package.Workbook.Worksheets.Add("Rich Comments");
 
-                var comment = sheet.Cells["A1"].AddComment("Bold title:\r\n", "evil corp");
+                ExcelComment comment = sheet.Cells["A1"].AddComment("Bold title:\r\n", "evil corp");
                 comment.Font.Bold = true;
-                var rt = comment.RichText.Add("Unbolded subtext");
-                rt.Bold = false;
                 comment.AutoFit = true;
+
+                ExcelRichText rt = comment.RichText.Add("Unbolded subtext");
+                rt.Bold = false;
 
                 // A more extensive example can be found in Sample6.cs::AddComments of the official examples project
                 // TODO: With Codeplex shutting down, once they've moved to GitHub, add urls here

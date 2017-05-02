@@ -13,7 +13,13 @@ namespace EPPlusTutorial.Util
         {
             var dir = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "excels"));
             Directory.CreateDirectory(dir.FullName);
-            return Path.Combine(dir.FullName, (fileName ?? callerName) + ".xlsx");
+
+            var name = fileName ?? callerName;
+            if (!name.Contains("."))
+            {
+                name += ".xlsx";
+            }
+            return Path.Combine(dir.FullName, name);
         }
     }
 }

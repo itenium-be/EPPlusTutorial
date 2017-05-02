@@ -18,14 +18,6 @@ Install-Package EPPlus
 - Writing values
 - Formatting sheets, columns and cells
 
-### Miscellaneous
-
-- Printing
-- Workbook properties
-- Converting Excel Addresses
-- Adding comments & rich text
-- Protection against edit
-
 2-Formulas
 ----------
 - BasicFormulas
@@ -34,7 +26,18 @@ Install-Package EPPlus
 
 3-Import
 --------
-Still todo :)
+Loading data from
+- LoadFromCollection & LoadFromArrays (IEnumerable)
+- LoadFromDataTable & DataReader
+- LoadFromText (CSV)
+
+4-Miscellaneous
+---------------
+- Printing
+- Workbook properties
+- Converting Excel Addresses
+- Adding comments & rich text
+- Protection against edit
 
 Charts
 ------

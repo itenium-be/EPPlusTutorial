@@ -53,6 +53,9 @@
     <Compile Include="2-Formulas-DataValidation.cs" />
     <Compile Include="3-Import.cs" />
     <Compile Include="4-Miscellaneous.cs" />
+    <None Include="excels\LoadFromText.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Compile Include="Util\BinDir.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ExcelHelpers.cs" />

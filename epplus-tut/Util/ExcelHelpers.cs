@@ -6,19 +6,19 @@ namespace EPPlusTutorial.Util
 {
     public static class ExcelHelpers
     {
-        public static ExcelRangeBase SetHeaders(this ExcelRangeBase cells, params string[] headers)
+        public static void SetHeaders(this ExcelRangeBase cell, params string[] headers)
         {
             foreach (string text in headers)
             {
-                cells.Value = text;
-                cells.Style.Font.Bold = true;
-                cells.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                cells.Style.Fill.BackgroundColor.SetColor(Color.DarkBlue);
-                cells.Style.Font.Color.SetColor(Color.White);
+                cell.Value = text;
+                cell.Style.Font.Bold = true;
+                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                cell.Style.Fill.BackgroundColor.SetColor(Color.DarkBlue);
+                cell.Style.Font.Color.SetColor(Color.White);
+                cell.AutoFilter = true;
 
-                cells = cells.Offset(0, 1);
+                cell = cell.Offset(0, 1);
             }
-            return cells;
         }
     }
 }
