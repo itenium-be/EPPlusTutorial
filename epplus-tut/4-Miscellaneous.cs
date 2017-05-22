@@ -2,7 +2,6 @@
 using EPPlusTutorial.Util;
 using NUnit.Framework;
 using OfficeOpenXml;
-using OfficeOpenXml.DataValidation;
 using OfficeOpenXml.Style;
 
 namespace EPPlusTutorial

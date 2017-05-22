@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using NUnit.Framework;
 using OfficeOpenXml;
 using EPPlusTutorial.Util;
 using OfficeOpenXml.Style;
-using OfficeOpenXml.Table;
 using System.Collections.Generic;
 using OfficeOpenXml.DataValidation;
 using OfficeOpenXml.DataValidation.Contracts;
