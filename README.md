@@ -1,7 +1,5 @@
 EPPlusTutorial
 ==============
-[UnitTest project with the code from the EPPlus blog series][article-link].
-
 The UnitTests can be executed to generate Excels in `bin/Debug/excels`.
 (Some tests even contain assertions!)
 
@@ -93,5 +91,4 @@ if (icon != null)
 }
 ```
 
-[article-link]: https://be-pongit.github.io/nuget/epplus/
 [chart-codeplex]: http://epplus.codeplex.com/wikipage?title=StatisticsSheetExample
