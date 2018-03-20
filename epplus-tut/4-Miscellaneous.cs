@@ -67,6 +67,7 @@ namespace EPPlusTutorial
                 package.Workbook.Properties.Company = "pongit";
                 package.Workbook.Properties.SetCustomPropertyValue("Checked by", "Jan Källman");
 
+                package.Workbook.Worksheets.Add("Sheet1");
                 package.SaveAs(new FileInfo(BinDir.GetPath()));
             }
         }
