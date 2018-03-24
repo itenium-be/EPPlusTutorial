@@ -64,7 +64,7 @@ namespace EPPlusTutorial
                 package.Workbook.Properties.Keywords = "";
                 package.Workbook.Properties.Category = "";
 
-                package.Workbook.Properties.Company = "pongit";
+                package.Workbook.Properties.Company = "itenium";
                 package.Workbook.Properties.SetCustomPropertyValue("Checked by", "Jan Källman");
 
                 package.Workbook.Worksheets.Add("Sheet1");
@@ -87,7 +87,7 @@ namespace EPPlusTutorial
                 rt.Bold = false;
 
                 // A more extensive example can be found in Sample6.cs::AddComments of the official examples project
-                // TODO: With Codeplex shutting down, once they've moved to GitHub, add urls here
+                // https://github.com/JanKallman/EPPlus/blob/master/SampleApp/Sample6.cs
 
                 package.SaveAs(new FileInfo(BinDir.GetPath()));
             }

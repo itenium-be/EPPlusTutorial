@@ -45,7 +45,7 @@ Don't seem to work for LibreOffice. Example code can be found in the official EP
 - Sample5.cs: A pie
 - Sample6.cs: Pretty nifty, worth checking out!
 
-[They also have a chart example on their main documentation][chart-codeplex].
+[They also have a chart example on their main documentation][chart-github].
 
 Wish List
 ---------
@@ -91,4 +91,4 @@ if (icon != null)
 }
 ```
 
-[chart-codeplex]: http://epplus.codeplex.com/wikipage?title=StatisticsSheetExample
+[chart-github]: https://github.com/JanKallman/EPPlus/wiki/Shapes,-Pictures-and-Charts

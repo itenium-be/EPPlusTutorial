@@ -138,6 +138,7 @@ namespace EPPlusTutorial
                 Assert.That(sheet.GetValue<string>(1, 1), Is.EqualTo("Numbers"));
                 sheet.Cells["B1"].Value = 15.32;
                 sheet.Cells["B1"].Style.Numberformat.Format = "#,##0.00";
+                // Alternatively: sheet.Cells["B1"].Formula = "FIXED(15.32, 2)";
                 Assert.That(sheet.Cells["B1"].Text, Is.EqualTo("15.32"));
 
                 // Percentage
@@ -168,12 +169,12 @@ namespace EPPlusTutorial
 
 
                 // An external hyperlink
-                sheet.Cells["C24"].Hyperlink = new Uri("http://pongit.be", UriKind.Absolute);
+                sheet.Cells["C24"].Hyperlink = new Uri("http://itenium.be", UriKind.Absolute);
                 sheet.Cells["C24"].Value = "Visit us";
                 sheet.Cells["C24"].Style.Font.Color.SetColor(Color.Blue);
                 sheet.Cells["C24"].Style.Font.UnderLine = true;
 
-                //sheet.Cells["C25"].Formula = "HYPERLINK(\"mailto:support@pongit.be\",\"Contact support\")";
+                //sheet.Cells["C25"].Formula = "HYPERLINK(\"mailto:info@itenium.be\",\"Contact support\")";
                 //package.Workbook.Properties.HyperlinkBase = new Uri("");
 
                 // An internal hyperlink

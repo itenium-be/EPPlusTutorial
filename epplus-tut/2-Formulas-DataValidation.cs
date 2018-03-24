@@ -30,8 +30,8 @@ namespace EPPlusTutorial
 
                 var data = AddThreeRowsDataAndFormat(sheet);
 
-                // Starting = is optional
-                sheet.Cells["A5"].Formula = "=COUNTA(A2:A4)";
+                // Do not start formula with =
+                sheet.Cells["A5"].Formula = "COUNTA(A2:A4)";
                 // Hide the formula (when the sheet.IsProtected)
                 sheet.Cells["A5"].Style.Hidden = true;
 
@@ -56,7 +56,7 @@ namespace EPPlusTutorial
                 Assert.That(sheet.Cells["F5"].Formula, Is.EqualTo("SUBTOTAL(9,F2:F4)"));
 
                 sheet.Calculate();
-                sheet.Cells["H2:H5"].Formula = "F2*(1-$G$5)"; // Pin G5
+                sheet.Cells["H2:H5"].Formula = "F2*(1-$G$5)"; // Pin G5 with $
 
                 // SUBTOTAL(9 = SUM) // 109 = Sum excluding manually hidden rows
                 // AVERAGE (1), COUNT (2), COUNTA (3), MAX (4), MIN (5)
