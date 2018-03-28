@@ -8,6 +8,7 @@ using NUnit.Framework;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using EPPlusTutorial.Util;
+using OfficeOpenXml.ConditionalFormatting;
 
 namespace EPPlusTutorial
 {
@@ -243,6 +244,41 @@ namespace EPPlusTutorial
                 package.SaveAs(new FileInfo(BinDir.GetPath()));
             }
         }
+
+        [Test]
+        public void ConditionalFormatting()
+        {
+            using (var package = new ExcelPackage())
+            {
+                var sheet = package.Workbook.Worksheets.Add("ConditionalFormatting");
+
+                #region Prepare Data
+                sheet.Cells["B4"].Value = 5;
+                sheet.Cells["B5"].Value = 10;
+                sheet.Cells["B6"].Value = 20;
+                sheet.Cells["B7"].Value = 40;
+                sheet.Cells["B8"].Value = 50;
+                sheet.Cells["B9"].Value = 30;
+                #endregion
+
+                ExcelAddress cfAddress1 = new ExcelAddress("B4:B9");
+                var cfRule1 = sheet.ConditionalFormatting.AddTwoColorScale(cfAddress1);
+
+                cfRule1.LowValue.Type = eExcelConditionalFormattingValueObjectType.Num;
+                cfRule1.LowValue.Value = 0;
+                cfRule1.LowValue.Color = Color.Green;
+
+                cfRule1.HighValue.Type = eExcelConditionalFormattingValueObjectType.Formula;
+                cfRule1.HighValue.Formula = "MAX(B4:B9)";
+                cfRule1.HighValue.Color = Color.Red;
+
+                cfRule1.StopIfTrue = true;
+                cfRule1.Style.Font.Bold = true;
+
+                package.SaveAs(new FileInfo(BinDir.GetPath()));
+            }
+        }
+
 
         [Test]
         public void FormattingSheetsAndColumns()
