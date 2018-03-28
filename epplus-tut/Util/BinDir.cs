@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -11,11 +12,13 @@ namespace EPPlusTutorial.Util
         /// </summary>
         public static string GetPath(string fileName = null, [CallerMemberName] string callerName = "")
         {
-            // TODO: Prefix filename with calling className
+            var mth = new StackTrace().GetFrame(1).GetMethod();
+            var cls = mth.ReflectedType.Name;
+
             var dir = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "excels"));
             Directory.CreateDirectory(dir.FullName);
 
-            var name = fileName ?? callerName;
+            var name = cls + (fileName ?? callerName);
             if (!name.Contains("."))
             {
                 name += ".xlsx";
