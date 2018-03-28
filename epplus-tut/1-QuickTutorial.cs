@@ -138,7 +138,7 @@ namespace EPPlusTutorial
                 Assert.That(sheet.GetValue<string>(1, 1), Is.EqualTo("Numbers"));
                 sheet.Cells["B1"].Value = 15.32;
                 sheet.Cells["B1"].Style.Numberformat.Format = "#,##0.00";
-                // Alternatively: sheet.Cells["B1"].Formula = "FIXED(15.32, 2)";
+                // Alternatively: sheet.Cells["B1"].Formula = "FIXED(B1; 2)";
                 Assert.That(sheet.Cells["B1"].Text, Is.EqualTo("15.32"));
 
                 // Percentage
@@ -236,6 +236,9 @@ namespace EPPlusTutorial
                 // MIGHT NOT WORK:
                 sheet.Cells["B6"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 sheet.Cells["B6"].Value = "I'm not centered? :(";
+
+                // Check for an example of Conditional formatting:
+                // https://github.com/JanKallman/EPPlus/wiki/Conditional-formatting
 
                 package.SaveAs(new FileInfo(BinDir.GetPath()));
             }
