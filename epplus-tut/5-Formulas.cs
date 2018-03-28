@@ -59,7 +59,7 @@ namespace EPPlusTutorial
                 sheet.Cells["B6"].Formula = "REPLACE(A1, 1, 3, \"A\")";
                 sheet.Where("B6", Is.EqualTo("A quick brown fox jumps over the lazy dog"));
 
-                sheet.Cells["A7"].Value = "=SUBSTITUTE(LOWER(A1); \"the\"; \"a\")"; // Replace text (case insensitive)
+                sheet.Cells["A7"].Value = "=SUBSTITUTE(LOWER(A1); \"the\"; \"a\")"; // Replace text (case sensitive - but LOWER(A1))
                 sheet.Cells["B7"].Formula = "SUBSTITUTE(LOWER(A1), \"the\", \"a\")";
                 sheet.Where("B7", Is.EqualTo(Regex.Replace(Fox, "the", "a", RegexOptions.IgnoreCase)));
 
