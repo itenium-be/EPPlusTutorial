@@ -23,7 +23,7 @@ namespace EPPlusTutorial
     /// Troubles? See <see cref="FormulasAndDataValidation.TroubleshootingFormulas"/>
     /// </summary>
     [TestFixture]
-    public class Formulas
+    public class FormulasReference
     {
         private const string Fox = "The quick brown fox jumps over the lazy dog";
 

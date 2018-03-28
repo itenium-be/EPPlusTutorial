@@ -56,7 +56,7 @@
     <None Include="excels\LoadFromText.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Compile Include="5-Formulas.cs" />
+    <Compile Include="5-Formulas-Reference.cs" />
     <Compile Include="Util\BinDir.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ExcelHelpers.cs" />

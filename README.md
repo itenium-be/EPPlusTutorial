@@ -15,8 +15,9 @@ Install-Package EPPlus
 - Selecting cells
 - Writing values
 - Formatting sheets, columns and cells
+- Conditional formatting
 
-2-Formulas
+2-Formulas-DataValidation
 ----------
 - BasicFormulas
 - DataValidation
@@ -37,6 +38,13 @@ Loading data from
 - Adding comments & rich text
 - Protection against edit
 
+5-Formulas-Reference
+----------
+- String manipulation
+- Numbers & Math
+- Date & Time
+- Boolean logic
+
 Charts
 ------
 Don't seem to work for LibreOffice. Example code can be found in the official EPPlus examples.
@@ -51,7 +59,7 @@ Wish List
 ---------
 Will we cover these also, sometime?
 
-- ConditionalFormatting: See Sample14.cs
+- ConditionalFormatting in more detail: See [Sample14.cs][github-sample-cf]
 - Filtering
 - Grouping and ungrouping
 - Tables
@@ -92,3 +100,4 @@ if (icon != null)
 ```
 
 [chart-github]: https://github.com/JanKallman/EPPlus/wiki/Shapes,-Pictures-and-Charts
+[github-sample-cf]: https://github.com/JanKallman/EPPlus/blob/master/SampleApp/Sample14.cs
