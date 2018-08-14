@@ -170,7 +170,7 @@ namespace EPPlusTutorial
 
 
                 // An external hyperlink
-                sheet.Cells["C24"].Hyperlink = new Uri("http://itenium.be", UriKind.Absolute);
+                sheet.Cells["C24"].Hyperlink = new Uri("https://itenium.be", UriKind.Absolute);
                 sheet.Cells["C24"].Value = "Visit us";
                 sheet.Cells["C24"].Style.Font.Color.SetColor(Color.Blue);
                 sheet.Cells["C24"].Style.Font.UnderLine = true;
