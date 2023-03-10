@@ -1,10 +1,17 @@
 EPPlusTutorial
 ==============
+
+### Attention: EPPlus is no longer free for commercial use
+
+
 The UnitTests can be executed to generate Excels in `bin/Debug/excels`.
 (Some tests even contain assertions!)
 
 ```powershell
-# Install :)
+# Install last free version:
+Install-Package EPPlus -Version 4.5.3
+
+# Install commercial version:
 Install-Package EPPlus
 ```
 

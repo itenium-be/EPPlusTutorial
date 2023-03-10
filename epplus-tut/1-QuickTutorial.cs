@@ -18,6 +18,11 @@ namespace EPPlusTutorial
         [Test]
         public void BasicUsage()
         {
+            // Put key in web.config or appconfig:
+            // EPPlus:ExcelPackage.LicenseContext
+            // See: https://github.com/EPPlusSoftware/EPPlus#licensecontext-parameter-must-be-set
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
             using (var package = new ExcelPackage())
             {
                 ExcelWorksheet sheet = package.Workbook.Worksheets.Add("MySheet");
@@ -204,7 +209,8 @@ namespace EPPlusTutorial
                 font.Color.SetColor(Color.Green);
                 // ExcelFont also has: Size, Italic, Underline, Strike, ...
 
-                sheet.Cells["A3"].Style.Font.SetFromFont(new Font(new FontFamily("Arial"), 15, FontStyle.Strikeout));
+                // TODO: breaking change here in paid version
+                //sheet.Cells["A3"].Style.Font.SetFromFont(new Font(new FontFamily("Arial"), 15, FontStyle.Strikeout));
                 sheet.Cells["A3"].Value = "SetFromFont(Font)";
 
                 // Borders need to be made
