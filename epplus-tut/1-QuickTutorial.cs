@@ -30,13 +30,13 @@ namespace EPPlusTutorial
                 // Setting & getting values
                 ExcelRange firstCell = sheet.Cells[1, 1];
                 firstCell.Value = "will it work?";
-                sheet.Cells["A2"].Formula = "CONCATENATE(A1,\" ... Ofcourse it will!\")";
+                sheet.Cells["A2"].Formula = "CONCATENATE(A1,\" ... Of course it will!\")";
                 Assert.That(firstCell.Text, Is.EqualTo("will it work?"));
 
                 // Numbers
                 var moneyCell = sheet.Cells["A3"];
                 moneyCell.Style.Numberformat.Format = "$#,##0.00";
-                moneyCell.Value = 15.25M;
+                moneyCell.Value = 1500.25M;
 
                 // Easily write any Enumerable to a sheet
                 // In this case: All Excel functions implemented by EPPlus
@@ -69,7 +69,7 @@ namespace EPPlusTutorial
                 sheet.Cells["D1"].Value = "Everything in the package will be overwritten";
                 sheet.Cells["D2"].Value = "by the package.Load() below!!!";
 
-                // Loads the worksheets from BasicUsage
+                // Load the worksheets from BasicUsage
                 // (MySheet with A1 = will it work?)
                 package.Load(basicUsageExcel);
 
@@ -271,8 +271,8 @@ namespace EPPlusTutorial
                 var cfRule1 = sheet.ConditionalFormatting.AddTwoColorScale(cfAddress1);
 
                 cfRule1.LowValue.Type = eExcelConditionalFormattingValueObjectType.Num;
-                cfRule1.LowValue.Value = 0;
-                cfRule1.LowValue.Color = Color.Green;
+                cfRule1.LowValue.Value = 30;
+                cfRule1.LowValue.Color = Color.Blue;
 
                 cfRule1.HighValue.Type = eExcelConditionalFormattingValueObjectType.Formula;
                 cfRule1.HighValue.Formula = "MAX(B4:B9)";
@@ -281,7 +281,8 @@ namespace EPPlusTutorial
                 cfRule1.StopIfTrue = true;
                 cfRule1.Style.Font.Bold = true;
 
-                package.SaveAs(new FileInfo(BinDir.GetPath()));
+                // package.SaveAs(new FileInfo(BinDir.GetPath()));
+                BinDir.Save(package, false);
             }
         }
 

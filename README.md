@@ -1,8 +1,16 @@
 EPPlusTutorial
 ==============
 
-### Attention: EPPlus is no longer free for commercial use
+## Attention: EPPlus is no longer free for commercial use
 
+You probably don't want to be here but instead at exactly the same
+thing for ClosedXML, which is MIT licensed, here: https://github.com/itenium-be/ClosedXMLTutorial
+
+
+## That's fine!
+
+The source code for the
+[blog series on EPPlus](https://itenium.be/blog/dotnet/create-xlsx-excel-with-epplus-csharp/)
 
 The UnitTests can be executed to generate Excels in `bin/Debug/excels`.
 (Some tests even contain assertions!)
