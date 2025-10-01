@@ -63,7 +63,7 @@ namespace EPPlusTutorial
                 // PRODUCT (6), STDEV (7), STDEVP (8), SUM (9), VAR (10)
 
                 sheet.Cells.AutoFitColumns();
-                package.SaveAs(new FileInfo(BinDir.GetPath()));
+                BinDir.Save(package, false);
             }
         }
 
